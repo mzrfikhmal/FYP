@@ -1,0 +1,7 @@
+.table {
+ max-width: 90%;
+ margin: 10px;
+}
+.table th {
+ text-align: center;
+}
