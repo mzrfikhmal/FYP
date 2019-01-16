@@ -21,7 +21,7 @@ handlereadMessage = async (event) => {
       
         //return the transaction hash from the ethereum contract
         
-        storehash.methods.readMessage().call({from: accounts[0]}, {from: accounts[1]}).then((values) => {
+        storehash.methods.readMessage(accounts[0]).call({from: accounts[0]}, {from: accounts[1]}).then((values) => {
           console.log(values);
           this.setState({
             ipfsHash: values[0],
