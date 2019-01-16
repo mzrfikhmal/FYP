@@ -14,8 +14,14 @@ class UploadFile extends Component {
       blockNumber:'',
       transactionHash:'',
       gasUsed:'',
-      txReceipt: ''   
+      txReceipt: '',
+      recipient: ''
     };
+    handleChange = (event) => {
+    this.setState({
+      [event.target.id]: event.target.value,
+    })
+  }
 
     captureFile =(event) => {
         event.stopPropagation()
@@ -53,6 +59,8 @@ onSubmit = async (event) => {
       event.preventDefault();
      //bring in user's metamask account address
       const accounts = await web3.eth.getAccounts();
+      web3.eth.defaultAccount = web3.eth.accounts[0];
+      console.log('Default Acc: ' + web3.eth.defaultAccount);
      
       console.log('Sending from Metamask account: ' + accounts[0]);
     //obtain contract address from storehash.js
@@ -68,7 +76,7 @@ onSubmit = async (event) => {
   //return the transaction hash from the ethereum contract
  //see, this https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html#methods-mymethod-send
         
-        storehash.methods.sendHash(this.state.ipfsHash).send({
+        storehash.methods.sendHash(accounts[0] ,this.state.ipfsHash).send({
           from: accounts[0] 
         }, (error, transactionHash) => {
           console.log(transactionHash);
@@ -82,12 +90,14 @@ onSubmit = async (event) => {
       const accounts = await web3.eth.getAccounts();
      
       console.log('Sending from Metamask account: ' + accounts[0]);
-
-      storehash.methods.sendMessage(this.state.ipfsHash, this.state.transactionHash ,this.state.recipient).send({
-          from: accounts[0] 
-        }); //storehash 
+      console.log('Recipient state: ' + this.state.recipient);
+      var receiver = this.state.recipient;
+      console.log('Receiver address: ' + receiver);
+      storehash.methods.sendMessage(this.state.ipfsHash, this.state.transactionHash , this.state.recipient).send({from: accounts[0], to: receiver
+        }).then((values) =>  {console.log(values)}); //storehash 
 
     };//onSend
+    
     render() {
       
       return (
@@ -156,9 +166,9 @@ onSubmit = async (event) => {
             <hr/>
             <Form className="needs-validation" onSubmit={this.handlesendMessage}>
               <h5>IPFS HASH</h5>
-              <input type="text" editable={false} selectTextOnFocus={false} className="form-control" id="ipfshash" placeholder="IPFS Hash" value={this.state.ipfsHash} onChange={this.handleChange} required />
+              <input type="text" className="form-control" id="ipfsHash" placeholder="IPFS Hash" value={this.state.ipfsHash} required />
               <h5>TX HASH</h5>
-              <input type="text" editable={false} selectTextOnFocus={false} className="form-control" id="txhash" placeholder="Transaction Hash" value={this.state.transactionHash} onChange={this.handleChange} required />
+              <input type="text" className="form-control" id="transactionHash" placeholder="Transaction Hash" value={this.state.transactionHash} required />
               <h5>RECEIVER ADDRESS</h5>
               <input type="text" className="form-control" id="recipient" placeholder="Address" value={this.state.recipient} onChange={this.handleChange} required />
              <hr/>
