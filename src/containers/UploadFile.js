@@ -32,9 +32,7 @@ class UploadFile extends Component {
         reader.onloadend = () => this.convertToBuffer(reader)    
       };
  convertToBuffer = async(reader) => {
-      //file is converted to a buffer for upload to IPFS
         const buffer = await Buffer.from(reader.result);
-      //set this buffer -using es6 syntax
         this.setState({buffer});
     };
 
@@ -57,24 +55,16 @@ await this.setState({blockNumber: this.state.txReceipt.blockNumber});
   } //onClick
 onSubmit = async (event) => {
       event.preventDefault();
-     //bring in user's metamask account address
       const accounts = await web3.eth.getAccounts();
       web3.eth.defaultAccount = web3.eth.accounts[0];
       console.log('Default Acc: ' + web3.eth.defaultAccount);
-     
       console.log('Sending from Metamask account: ' + accounts[0]);
-    //obtain contract address from storehash.js
+    
       const ethAddress= await storehash.options.address;
       this.setState({ethAddress});
-    //save document to IPFS,return its hash#, and set hash# to state
-    //https://github.com/ipfs/interface-ipfs-core/blob/master/SPEC/FILES.md#add 
-    await ipfs.add(this.state.buffer, (err, ipfsHash) => {
+     await ipfs.add(this.state.buffer, (err, ipfsHash) => {
         console.log(err,ipfsHash);
-        //setState by setting ipfsHash to ipfsHash[0].hash 
         this.setState({ ipfsHash:ipfsHash[0].hash });
-   // call Ethereum contract method "sendHash" and .send IPFS hash to etheruem contract 
-  //return the transaction hash from the ethereum contract
- //see, this https://web3js.readthedocs.io/en/1.0/web3-eth-contract.html#methods-mymethod-send
         
         storehash.methods.sendHash(accounts[0] ,this.state.ipfsHash).send({
           from: accounts[0] 
@@ -82,7 +72,7 @@ onSubmit = async (event) => {
           console.log(transactionHash);
           this.setState({transactionHash});
         }); //storehash 
-      }) //await ipfs.add 
+      }) //ipfs.add 
     }; //onSubmit
 
     handlesendMessage = async (event) => {
@@ -93,7 +83,7 @@ onSubmit = async (event) => {
       console.log('Recipient state: ' + this.state.recipient);
       var receiver = this.state.recipient;
       console.log('Receiver address: ' + receiver);
-      storehash.methods.sendMessage(this.state.ipfsHash, this.state.transactionHash , this.state.recipient).send({from: accounts[0], to: receiver
+      storehash.methods.sendMessage(this.state.ipfsHash, this.state.transactionHash , this.state.recipient).send({from: accounts[0]
         }).then((values) =>  {console.log(values)}); //storehash 
 
     };//onSend
