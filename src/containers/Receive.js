@@ -35,7 +35,7 @@ handlereadMessage = async (event) => {
       return (
         <div className="App">
           <header className="App-header">
-            <h1> Receive File From the Sender</h1>
+            <h1> Receive File From Lecturer</h1>
           </header>
           
        
@@ -57,6 +57,14 @@ handlereadMessage = async (event) => {
                   <tr>
                     <td>Tx Hash</td>
                     <td>{this.state.hash}</td>
+                  </tr>
+                  <tr>
+                    <td>View On IPFS</td>
+                    <td><a target="_blank" rel="noopener noreferrer" href={`https://ipfs.io/ipfs/${this.state.ipfsHash}`}>IPFS</a></td>
+                  </tr>
+                  <tr>
+                    <td>View Receipt On Etherscan</td>
+                    <td><a target="_blank" rel="noopener noreferrer" href={`https://rinkeby.etherscan.io/tx/${this.state.hash}`}>Etherscan</a></td>
                   </tr>
                 </tbody>
             </Table>
