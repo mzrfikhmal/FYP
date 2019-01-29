@@ -17,9 +17,6 @@ handlereadMessage = async (event) => {
       const accounts = await web3.eth.getAccounts();
      
       console.log('Metamask account: ' + accounts[0]);
-  
-      
-        //return the transaction hash from the ethereum contract
         
         storehash.methods.readMessage(accounts[0]).call({from: accounts[0]}, {from: accounts[1]}).then((values) => {
           console.log(values);
